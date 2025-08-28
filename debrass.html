@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h2>Restaurant Availability Checker</h2>
+
+  <label for="source">Select API:</label>
+  <select id="source">
+    <option value="formitable">Formitable</option>
+    <option value="etender">Etender</option>
+  </select>
+  <br><br>
+
+  <label for="datePicker">Date:</label>
+  <input type="date" id="datePicker">
+  <br><br>
+
+  <label for="people">People:</label>
+  <input type="number" id="people" min="1" max="25" value="2">
+  <br><br>
+
+  <button onclick="fetchAvailability()">Check Availability</button>
+
+  <h3>Result:</h3>
+  <pre id="result"></pre>
+
+  <script>
+    async function fetchAvailability() {
+      const date = document.getElementById("datePicker").value;
+      const people = document.getElementById("people").value;
+      const source = document.getElementById("source").value;
+
+      let url = "";
+
+      if (source === "formitable") {
+        url = `http://localhost:5000/formitable/availability?date=${date}&people=${people}`;
+      } else {
+        url = `http://localhost:5000/etender/availability?date=${date}&partysize=${people}`;
+      }
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("result").innerText = "❌ Error: " + err;
+      }
+    }
+  </script>
+</body>
+</html>
